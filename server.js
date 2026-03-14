@@ -3,7 +3,7 @@ const sqlite3 = require("sqlite3").verbose()
 const bodyParser = require("body-parser")
 const cors = require("cors")
 
-const app = express()
+const app = express() 
 
 app.use(cors())
 app.use(express.static("../"))
