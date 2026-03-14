@@ -5,7 +5,7 @@
     'author': 'Hackathon Team',
     'category': 'Inventory',
     'depends': ['base'],
-    'data': [],
+    'data': [],   
     'installable': True,
     'application': True,
 }
