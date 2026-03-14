@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Deliveries | CoreInventory</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI, sans-serif;
+}
+
+body{
+display:flex;
+background:#f4f6fb;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:220px;
+background:#0f1c2e;
+color:white;
+height:100vh;
+padding:20px;
+}
+
+.sidebar h2{
+margin-bottom:30px;
+}
+
+.sidebar a{
+display:block;
+color:white;
+text-decoration:none;
+padding:10px 0;
+}
+
+.sidebar a:hover{
+opacity:0.7;
+}
+
+/* MAIN */
+
+.main{
+flex:1;
+padding:40px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+.header h1{
+font-size:28px;
+}
+
+/* FORM */
+
+.card{
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 5px 20px rgba(0,0,0,0.05);
+margin-bottom:30px;
+}
+
+.form-grid{
+display:grid;
+grid-template-columns:1fr 1fr 1fr auto;
+gap:15px;
+align-items:end;
+}
+
+input,select{
+padding:10px;
+border:1px solid #ddd;
+border-radius:5px;
+}
+
+button{
+background:#1e88e5;
+color:white;
+border:none;
+padding:10px 15px;
+border-radius:5px;
+cursor:pointer;
+}
+
+button:hover{
+background:#1565c0;
+}
+
+/* TABLE */
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+border-radius:10px;
+overflow:hidden;
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #eee;
+text-align:left;
+}
+
+th{
+background:#f7f9fc;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<h2><i class="fa-solid fa-boxes-stacked"></i> CoreInventory</h2>
+
+<a href="dashboard.html"><i class="fa fa-chart-line"></i> Dashboard</a>
+<a href="products.html"><i class="fa fa-box"></i> Products</a>
+<a href="receipts.html"><i class="fa-solid fa-truck"></i> Receipts</a>
+<a href="deliveries.html"><i class="fa fa-arrow-right"></i> Deliveries</a>
+<a href="transfers.html"><i class="fa fa-right-left"></i> Transfers</a>
+<a href="history.html"><i class="fa fa-clock"></i> History</a>
+<a href="login.html"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="main">
+
+<div class="header">
+<h1>Deliveries</h1>
+</div>
+
+<!-- DELIVERY FORM -->
+
+<div class="card">
+
+<h3 style="margin-bottom:15px;">Create Delivery</h3>
+
+<form id="deliveryForm">
+
+<div class="form-grid">
+
+<select id="product"></select>
+
+<input type="text" id="customer" placeholder="Customer Name" required>
+
+<input type="number" id="quantity" placeholder="Quantity" required>
+
+<button type="submit">Deliver</button>
+
+</div>
+
+</form>
+
+</div>
+
+<!-- DELIVERY TABLE -->
+
+<div class="card">
+
+<h3 style="margin-bottom:15px;">Recent Deliveries</h3>
+
+<table id="deliveryTable">
+
+<thead>
+<tr>
+<th>Date</th>
+<th>Product</th>
+<th>Customer</th>
+<th>Quantity</th>
+</tr>
+</thead>
+
+<tbody></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+const API = "http://localhost:3000"
+
+/* LOAD PRODUCTS */
+
+async function loadProducts(){
+
+const res = await fetch(API+"/products")
+const products = await res.json()
+
+const select = document.getElementById("product")
+
+select.innerHTML = ""
+
+products.forEach(p=>{
+
+const option = document.createElement("option")
+
+option.value = p.id
+option.textContent = p.name + " (Stock: "+p.quantity+")"
+
+select.appendChild(option)
+
+})
+
+}
+
+/* LOAD DELIVERY HISTORY */
+
+async function loadDeliveries(){
+
+const res = await fetch(API+"/history")
+const data = await res.json()
+
+const table = document.querySelector("#deliveryTable tbody")
+
+table.innerHTML = ""
+
+data
+.filter(item=>item.action==="DELIVERY")
+.slice(0,10)
+.forEach(d=>{
+
+const row = document.createElement("tr")
+
+row.innerHTML = `
+<td>${d.date}</td>
+<td>${d.name}</td>
+<td>-</td>
+<td>${d.quantity}</td>
+`
+
+table.appendChild(row)
+
+})
+
+}
+
+/* CREATE DELIVERY */
+
+document.getElementById("deliveryForm").addEventListener("submit",async(e)=>{
+
+e.preventDefault()
+
+const product_id = document.getElementById("product").value
+const customer = document.getElementById("customer").value
+const quantity = document.getElementById("quantity").value
+
+const res = await fetch(API+"/deliveries",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+product_id,
+customer,
+quantity
+})
+
+})
+
+const data = await res.json()
+
+alert(data.message)
+
+loadProducts()
+loadDeliveries()
+
+})
+
+loadProducts()
+loadDeliveries()
+
+</script>
+
+</body>
+</html>

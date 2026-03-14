@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock History</title>
+
+<style>
+
+body{
+font-family:'Segoe UI',sans-serif;
+background:#f1f5f9;
+padding:40px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+button{
+background:#2563eb;
+color:white;
+border:none;
+padding:8px 14px;
+border-radius:6px;
+cursor:pointer;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+border-radius:10px;
+overflow:hidden;
+box-shadow:0 10px 20px rgba(0,0,0,0.05);
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #eee;
+text-align:left;
+}
+
+th{
+background:#f9fafb;
+}
+
+tr:hover{
+background:#f9fafb;
+}
+
+.receipt{
+color:green;
+font-weight:600;
+}
+
+.delivery{
+color:red;
+font-weight:600;
+}
+
+.transfer{
+color:#2563eb;
+font-weight:600;
+}
+
+.empty{
+text-align:center;
+padding:20px;
+color:#888;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+
+<h2>Stock Movement History</h2>
+
+<a href="dashboard.html">
+<button>Back to Dashboard</button>
+</a>
+
+</div>
+
+<table>
+
+<thead>
+<tr>
+<th>Product</th>
+<th>Action</th>
+<th>Quantity</th>
+<th>Date</th>
+</tr>
+</thead>
+
+<tbody id="historyTable"></tbody>
+
+</table>
+
+<script>
+
+async function loadHistory(){
+
+const res = await fetch("http://localhost:3000/history")
+const data = await res.json()
+
+const table = document.getElementById("historyTable")
+
+table.innerHTML=""
+
+if(data.length===0){
+
+table.innerHTML=`<tr><td colspan="4" class="empty">No history records yet</td></tr>`
+return
+
+}
+
+data.forEach(row=>{
+
+let actionClass=""
+
+if(row.action==="RECEIPT") actionClass="receipt"
+if(row.action==="DELIVERY") actionClass="delivery"
+if(row.action==="TRANSFER") actionClass="transfer"
+
+const tr=document.createElement("tr")
+
+tr.innerHTML=`
+<td>${row.name}</td>
+<td class="${actionClass}">${row.action}</td>
+<td>${row.quantity}</td>
+<td>${new Date(row.date).toLocaleString()}</td>
+`
+
+table.appendChild(tr)
+
+})
+
+}
+
+loadHistory()
+
+</script>
+
+</body>
+</html>

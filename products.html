@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Products</title>
+
+<style>
+
+body{
+font-family:'Segoe UI',sans-serif;
+background:#f1f5f9;
+padding:40px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+h1{
+margin-bottom:10px;
+}
+
+button{
+padding:10px 18px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+form{
+margin-bottom:30px;
+}
+
+input{
+padding:10px;
+margin-right:10px;
+border:1px solid #ccc;
+border-radius:6px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+border-radius:10px;
+overflow:hidden;
+box-shadow:0 10px 20px rgba(0,0,0,0.05);
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #eee;
+text-align:left;
+}
+
+th{
+background:#f9fafb;
+font-weight:600;
+}
+
+tr:hover{
+background:#f9fafb;
+}
+
+.empty{
+text-align:center;
+padding:20px;
+color:#888;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<h1>Products</h1>
+
+<a href="dashboard.html">
+<button>Back to Dashboard</button>
+</a>
+
+</div>
+
+<form id="productForm">
+
+<input id="name" placeholder="Product Name" required>
+<input id="sku" placeholder="SKU" required>
+<input id="category" placeholder="Category">
+<input id="quantity" type="number" placeholder="Quantity">
+
+<button type="submit">Add Product</button>
+
+</form>
+
+<table>
+
+<thead>
+<tr>
+<th>Name</th>
+<th>SKU</th>
+<th>Category</th>
+<th>Quantity</th>
+</tr>
+</thead>
+
+<tbody id="productTable"></tbody>
+
+</table>
+
+<script>
+
+async function loadProducts(){
+
+try{
+
+const res = await fetch("http://localhost:3000/products")
+const products = await res.json()
+
+const table = document.getElementById("productTable")
+
+table.innerHTML=""
+
+if(products.length===0){
+
+table.innerHTML=`<tr><td colspan="4" class="empty">No products found</td></tr>`
+return
+
+}
+
+products.forEach(p=>{
+
+const tr=document.createElement("tr")
+
+tr.innerHTML=`
+<td>${p.name}</td>
+<td>${p.sku}</td>
+<td>${p.category}</td>
+<td>${p.quantity}</td>
+`
+
+table.appendChild(tr)
+
+})
+
+}catch(err){
+
+alert("Failed to load products")
+
+}
+
+}
+
+document.getElementById("productForm").addEventListener("submit",async e=>{
+
+e.preventDefault()
+
+const name=document.getElementById("name").value
+const sku=document.getElementById("sku").value
+const category=document.getElementById("category").value
+const quantity=document.getElementById("quantity").value
+
+try{
+
+await fetch("http://localhost:3000/products",{
+
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+name,
+sku,
+category,
+quantity
+})
+
+})
+
+document.getElementById("productForm").reset()
+
+loadProducts()
+
+}catch(err){
+
+alert("Failed to add product")
+
+}
+
+})
+
+loadProducts()
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Adjustments | CoreInventory</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI;
+}
+
+body{
+display:flex;
+background:#f4f6fb;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:220px;
+background:#0f1c2e;
+color:white;
+height:100vh;
+padding:20px;
+}
+
+.sidebar h2{
+margin-bottom:30px;
+}
+
+.sidebar a{
+display:block;
+color:white;
+text-decoration:none;
+padding:10px 0;
+}
+
+/* MAIN */
+
+.main{
+flex:1;
+padding:40px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 5px 20px rgba(0,0,0,0.05);
+margin-bottom:30px;
+}
+
+/* FORM */
+
+.form-grid{
+display:grid;
+grid-template-columns:1fr 1fr 1fr auto;
+gap:15px;
+}
+
+input,select{
+padding:10px;
+border:1px solid #ddd;
+border-radius:5px;
+}
+
+button{
+background:#e53935;
+color:white;
+border:none;
+padding:10px 15px;
+border-radius:5px;
+cursor:pointer;
+}
+
+/* TABLE */
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #eee;
+}
+
+th{
+background:#f7f9fc;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<h2><i class="fa-solid fa-boxes-stacked"></i> CoreInventory</h2>
+
+<a href="dashboard.html">Dashboard</a>
+<a href="products.html">Products</a>
+<a href="receipts.html">Receipts</a>
+<a href="deliveries.html">Deliveries</a>
+<a href="transfers.html">Transfers</a>
+<a href="adjustments.html">Adjustments</a>
+<a href="settings.html">Settings</a>
+<a href="login.html">Logout</a>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="main">
+
+<h1 style="margin-bottom:20px;">Stock Adjustment</h1>
+
+<div class="card">
+
+<form id="adjustForm">
+
+<div class="form-grid">
+
+<select id="product"></select>
+
+<input type="number" id="adjustment" placeholder="Adjustment (+ / -)" required>
+
+<input type="text" id="reason" placeholder="Reason">
+
+<button type="submit">Apply</button>
+
+</div>
+
+</form>
+
+</div>
+
+<div class="card">
+
+<h3>Recent Adjustments</h3>
+
+<table id="adjustTable">
+
+<thead>
+<tr>
+<th>Date</th>
+<th>Product</th>
+<th>Adjustment</th>
+<th>Reason</th>
+</tr>
+</thead>
+
+<tbody></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+const API="http://localhost:3000"
+
+async function loadProducts(){
+
+const res=await fetch(API+"/products")
+const products=await res.json()
+
+const select=document.getElementById("product")
+
+select.innerHTML=""
+
+products.forEach(p=>{
+
+const option=document.createElement("option")
+
+option.value=p.id
+option.textContent=p.name+" (Stock: "+p.quantity+")"
+
+select.appendChild(option)
+
+})
+
+}
+
+document.getElementById("adjustForm").addEventListener("submit",async(e)=>{
+
+e.preventDefault()
+
+const product_id=document.getElementById("product").value
+const adjustment=document.getElementById("adjustment").value
+const reason=document.getElementById("reason").value
+
+await fetch(API+"/adjustments",{
+
+method:"POST",
+
+headers:{ "Content-Type":"application/json" },
+
+body:JSON.stringify({
+product_id,
+adjustment,
+reason
+})
+
+})
+
+alert("Adjustment Applied")
+
+loadProducts()
+
+})
+
+loadProducts()
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Receipts</title>
+
+<style>
+
+body{
+font-family:'Segoe UI',sans-serif;
+background:#f1f5f9;
+padding:40px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+h1{
+margin-bottom:10px;
+}
+
+button{
+padding:10px 18px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+form{
+margin-bottom:30px;
+}
+
+input,select{
+padding:10px;
+margin-right:10px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 10px 20px rgba(0,0,0,0.05);
+display:inline-block;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<h1>Incoming Goods (Receipts)</h1>
+
+<a href="dashboard.html">
+<button>Back to Dashboard</button>
+</a>
+
+</div>
+
+<div class="card">
+
+<form id="receiptForm">
+
+<select id="product"></select>
+
+<input id="supplier" placeholder="Supplier" required>
+
+<input id="quantity" type="number" placeholder="Quantity" required>
+
+<button type="submit">Receive Stock</button>
+
+</form>
+
+</div>
+
+<script>
+
+async function loadProducts(){
+
+try{
+
+const res = await fetch("http://localhost:3000/products")
+const products = await res.json()
+
+const select = document.getElementById("product")
+
+select.innerHTML=""
+
+if(products.length===0){
+
+select.innerHTML=`<option>No products available</option>`
+return
+
+}
+
+products.forEach(p=>{
+select.innerHTML += `<option value="${p.id}">${p.name}</option>`
+})
+
+}catch(err){
+
+alert("Failed to load products")
+
+}
+
+}
+
+document.getElementById("receiptForm").addEventListener("submit", async e=>{
+
+e.preventDefault()
+
+const product_id=document.getElementById("product").value
+const supplier=document.getElementById("supplier").value
+const quantity=document.getElementById("quantity").value
+
+try{
+
+await fetch("http://localhost:3000/receipts",{
+
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+product_id,
+supplier,
+quantity
+})
+
+})
+
+document.getElementById("receiptForm").reset()
+
+alert("Stock received successfully")
+
+}catch(err){
+
+alert("Failed to record receipt")
+
+}
+
+})
+
+loadProducts()
+
+</script>
+
+</body>
+</html>

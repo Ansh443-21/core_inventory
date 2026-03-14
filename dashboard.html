@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoreInventory Dashboard</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+/* PAGE LAYOUT */
+
+body{
+display:flex;
+height:100vh;
+background:#f1f5f9;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:230px;
+background:#111827;
+color:white;
+padding:25px 20px;
+display:flex;
+flex-direction:column;
+}
+
+.sidebar h2{
+margin-bottom:30px;
+font-size:22px;
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.sidebar a{
+text-decoration:none;
+color:#d1d5db;
+padding:12px 10px;
+border-radius:6px;
+display:flex;
+align-items:center;
+gap:10px;
+margin-bottom:8px;
+transition:0.2s;
+}
+
+.sidebar a:hover{
+background:#1f2937;
+color:white;
+}
+
+/* MAIN CONTENT */
+
+.main{
+flex:1;
+padding:30px;
+overflow-y:auto;
+}
+
+/* HEADER */
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+.header h1{
+font-size:26px;
+}
+
+/* KPI CARDS */
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 10px 20px rgba(0,0,0,0.05);
+display:flex;
+flex-direction:column;
+gap:8px;
+transition:0.2s;
+}
+
+.card:hover{
+transform:translateY(-3px);
+box-shadow:0 12px 25px rgba(0,0,0,0.08);
+}
+
+.card i{
+font-size:22px;
+color:#2563eb;
+}
+
+.card h3{
+font-size:18px;
+color:#374151;
+}
+
+.card p{
+font-size:22px;
+font-weight:600;
+}
+
+/* BUTTON */
+
+button{
+background:#2563eb;
+color:white;
+border:none;
+padding:8px 14px;
+border-radius:6px;
+cursor:pointer;
+margin-bottom:15px;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+/* TABLE */
+
+.table-section{
+margin-top:40px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+border-radius:10px;
+overflow:hidden;
+box-shadow:0 10px 20px rgba(0,0,0,0.05);
+}
+
+th,td{
+padding:12px;
+text-align:left;
+border-bottom:1px solid #eee;
+}
+
+th{
+background:#f9fafb;
+font-weight:600;
+}
+
+tr:hover{
+background:#f9fafb;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<h2><i class="fa-solid fa-boxes-stacked"></i> CoreInventory</h2>
+
+<a href="dashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+<a href="products.html"><i class="fa fa-box"></i> Products</a>
+<a href="receipts.html"><i class="fa-solid fa-truck"></i> Receipts</a>
+<a href="deliveries.html"><i class="fa fa-arrow-right"></i> Deliveries</a>
+<a href="transfers.html"><i class="fa fa-right-left"></i> Transfers</a>
+<a href="adjustments.html"><i class="fa-solid fa-clipboard"></i> Adjustments</a>
+<a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a>
+<a href="login.html"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+
+</div>
+
+<!-- MAIN CONTENT -->
+
+<div class="main">
+
+<div class="header">
+<h1>Dashboard</h1>
+</div>
+
+<!-- KPI CARDS -->
+
+<div class="cards">
+
+<div class="card">
+<i class="fa-solid fa-box"></i>
+<h3>Total Products</h3>
+<p id="totalProducts">0</p>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-triangle-exclamation"></i>
+<h3>Low Stock Items</h3>
+<p id="lowStock">0</p>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-truck"></i>
+<h3>Pending Receipts</h3>
+<p id="pendingReceipts">0</p>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-arrow-right"></i>
+<h3>Pending Deliveries</h3>
+<p id="pendingDeliveries">0</p>
+</div>
+
+</div>
+
+<!-- RECENT MOVEMENTS TABLE -->
+
+<div class="table-section">
+
+<a href="history.html">
+<button>View Stock History</button>
+</a>
+
+<h2 style="margin-bottom:15px;">Recent Stock Activity</h2>
+
+<table>
+
+<tr>
+<th>Date</th>
+<th>Product</th>
+<th>Action</th>
+<th>Quantity</th>
+</tr>
+
+<tr>
+<td>10 Apr</td>
+<td>Steel Rod</td>
+<td>Receipt</td>
+<td style="color:green;">+100</td>
+</tr>
+
+<tr>
+<td>12 Apr</td>
+<td>Steel Rod</td>
+<td>Transfer</td>
+<td>Main → Rack A</td>
+</tr>
+
+<tr>
+<td>14 Apr</td>
+<td>Steel Rod</td>
+<td>Delivery</td>
+<td style="color:red;">-20</td>
+</tr>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+async function loadDashboard(){
+
+const res = await fetch("http://localhost:3000/dashboard")
+const data = await res.json()
+
+document.querySelector("#totalProducts").innerText = data.totalProducts
+document.querySelector("#lowStock").innerText = data.lowStock
+document.querySelector("#pendingReceipts").innerText = data.receipts
+document.querySelector("#pendingDeliveries").innerText = data.deliveries
+
+}
+
+loadDashboard()
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account</title>
+
+<style>
+
+body{
+font-family:'Segoe UI',sans-serif;
+background:#f1f5f9;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+.card{
+background:white;
+padding:40px;
+width:360px;
+border-radius:12px;
+box-shadow:0 15px 35px rgba(0,0,0,0.1);
+}
+
+h2{
+margin-bottom:20px;
+}
+
+.input{
+margin-bottom:15px;
+}
+
+input{
+width:100%;
+padding:12px;
+border:1px solid #ddd;
+border-radius:6px;
+font-size:14px;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#2563eb;
+border:none;
+color:white;
+border-radius:6px;
+cursor:pointer;
+font-size:15px;
+}
+
+button:hover{
+background:#1e40af;
+}
+
+p{
+margin-top:15px;
+font-size:14px;
+}
+
+a{
+color:#2563eb;
+text-decoration:none;
+}
+
+.message{
+margin-top:10px;
+font-size:14px;
+color:red;
+}
+
+.success{
+color:green;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>Create Account</h2>
+
+<form id="signupForm">
+
+<div class="input">
+<input type="text" id="name" placeholder="Full Name" required>
+</div>
+
+<div class="input">
+<input type="email" id="email" placeholder="Email" required>
+</div>
+
+<div class="input">
+<input type="password" id="password" placeholder="Password" required>
+</div>
+
+<div class="input">
+<input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+</div>
+
+<button type="submit">Create Account</button>
+
+<p>Already have an account? <a href="login.html">Login</a></p>
+
+<div id="message" class="message"></div>
+
+</form>
+
+</div>
+
+<script>
+
+document.getElementById("signupForm").addEventListener("submit", async function(e){
+
+e.preventDefault()
+
+const name=document.getElementById("name").value
+const email=document.getElementById("email").value
+const password=document.getElementById("password").value
+const confirm=document.getElementById("confirmPassword").value
+
+const msg=document.getElementById("message")
+
+if(password !== confirm){
+msg.innerText="Passwords do not match"
+return
+}
+
+try{
+
+const res=await fetch("http://localhost:3000/signup",{
+
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+name,
+email,
+password
+})
+
+})
+
+const data=await res.json()
+
+msg.innerText=data.message
+msg.classList.add("success")
+
+setTimeout(()=>{
+window.location.href="login.html"
+},1500)
+
+}catch(err){
+
+msg.innerText="Signup failed. Please try again."
+
+}
+
+})
+
+</script>
+
+</body>
+</html>
